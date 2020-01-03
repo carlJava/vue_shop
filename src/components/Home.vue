@@ -14,8 +14,8 @@
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <div class="asideToggle" @click="asideToggle">|||</div>
         <!-- 菜单栏 -->
-        <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
-        unique-opened router :collapse="isCollapse" :collapse-transition="false">
+        <el-menu background-color="#545c64" text-color="#fff" active-text-color="#409EFF"
+        unique-opened router :collapse="isCollapse" :collapse-transition="false" :default-active="activedMenuPath">
         <!-- 一级菜单 -->
           <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单的列表内容 -->
@@ -25,7 +25,7 @@
             </template>
 
             <!-- 二级菜单 -->
-            <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
+            <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="saveMenuPath('/' + subItem.path)">
               <i class="el-icon-menu"></i>
               <span slot="title">{{ subItem.authName }}</span>
             </el-menu-item>
@@ -57,18 +57,21 @@ export default {
         '145': 'iconfont icon-baobiao'
       },
       // 侧边栏菜单是否展开
-      isCollapse: false
+      isCollapse: false,
+      // 激活的二级菜单链接
+      activedMenuPath: '/users'
     }
   },
   created () {
     this.getMenuList()
+    this.activedMenuPath = window.sessionStorage.getItem('menuPath')
   },
   methods: {
     // 获取左侧菜单列表
     async getMenuList () {
       const { data: res } = await this.$axios.get('/menus')
       if (res.meta.status !== 200) {
-        return this.$message.error('菜单列表获取失败')
+        return this.$message.error('菜单列表获取失败' + res.meta.msg)
       }
       this.menuList = res.data
     },
@@ -77,9 +80,14 @@ export default {
       window.sessionStorage.clear()
       this.$router.push('/login')
     },
-    // to
+    // 控制左侧菜单折叠与展开
     asideToggle () {
       this.isCollapse = !this.isCollapse
+    },
+    // 将激活的二级菜单地址保存到sessionStorage中
+    saveMenuPath (menuPath) {
+      this.activedMenuPath = menuPath
+      window.sessionStorage.setItem('menuPath', menuPath)
     }
   }
 }
@@ -105,6 +113,9 @@ export default {
   .el-aside{
     background-color: #545c64;
     color: white;
+  }
+  .el-main{
+    background-color: #EAEDF1;
   }
   .container{
     height: 100%;

@@ -2,4 +2,21 @@ html,body,div#app{
   height: 100%;
   margin: 0;
   padding: 0;
+  min-width: 1336px;
+}
+.el-card{
+  margin-top: 10px;  
+}
+.el-breadcrumb{
+  font-size: 12px;
+}
+.el-cascader-panel{
+  height: 245px !important;
+}
+.el-step__title{
+  font-size: 12px !important;
+}
+.ql-container.ql-snow{
+  min-height: 150px;
+  margin-bottom: 10px;
 }
